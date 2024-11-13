@@ -1,9 +1,19 @@
-from rest_framework import serializers
-from users.models import User
+from rest_framework.serializers import ModelSerializer
+
+from users.models import User, Payment
 
 
-class UserSerializer(serializers.ModelSerializer):
+class PaymentSerializer(ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = '__all__'
+
+
+class UserSerializer(ModelSerializer):
+    payments = PaymentSerializer(many=True)
+
     class Meta:
         model = User
-        fields = ['id', 'email', 'phone', 'city', 'avatar']
-        read_only_fields = ['email', 'password']
+        fields = ['id', 'username', 'email', 'payments']
+
+
