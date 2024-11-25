@@ -17,6 +17,6 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(permission_classes=(AllowAny,)), name='token_refresh'),
     path('profile/<int:pk>/', UserProfileView.as_view(), name='user-profile'),
 
-    path('payment/', PaymentListCreateAPIView.as_view(), name='payment-detail'),
+    path('payment/', PaymentListCreateAPIView.as_view(), name='payment-list-create'),
     path('payment/<int:pk>/', PaymentRetrieveUpdateDestroyAPIView.as_view(), name='payment-detail'),
 ] + router.urls
