@@ -6,6 +6,7 @@ from lms.models import Course, Lesson
 
 NULLABLE = {'blank': True, 'null': True}
 
+
 class User(AbstractUser):
     username = None
 
@@ -29,6 +30,7 @@ class Payment(models.Model):
     PAYMENT_METHOD_CHOICES = [
         ('cash', 'Наличные'),
         ('transfer', 'Перевод на счет'),
+        ('stripe', 'Stripe'),
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='payments', **NULLABLE)
@@ -37,6 +39,8 @@ class Payment(models.Model):
     paid_lesson = models.ForeignKey(Lesson, on_delete=models.SET_NULL, verbose_name='Оплаченный урок', **NULLABLE)
     amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Сумма оплаты')
     payment_method = models.CharField(max_length=10, choices=PAYMENT_METHOD_CHOICES, verbose_name='Способ оплаты')
+    stripe_session_id = models.CharField(max_length=255, **NULLABLE, verbose_name="ID сессии Stripe")
+    stripe_payment_url = models.URLField(max_length=500, **NULLABLE, verbose_name="Ссылка на оплату")
 
     class Meta:
         verbose_name = 'Платеж'

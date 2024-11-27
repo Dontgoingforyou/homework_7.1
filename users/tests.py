@@ -5,6 +5,7 @@ from users.models import User, Payment
 from rest_framework_simplejwt.tokens import RefreshToken
 from decimal import Decimal
 
+
 class UserViewSetTestCase(APITestCase):
     def setUp(self):
         """ Создание пользователя и установка JWT-токена для авторизации """
@@ -138,4 +139,3 @@ class PaymentTestCase(APITestCase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Payment.objects.all().count(), 0)
-
