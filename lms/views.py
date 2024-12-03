@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.shortcuts import get_object_or_404
+from django.utils.timezone import now
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -7,6 +10,7 @@ from rest_framework.views import APIView
 from lms.models import Course, Lesson, Subscription
 from lms.paginations import CustomPagination
 from lms.serializers import CourseSerializer, LessonSerializer
+from lms.tasks import send_course_update_email
 from users.permissions import IsModer, IsOwner
 
 
@@ -36,6 +40,22 @@ class CourseViewSet(viewsets.ModelViewSet):
         context['request'] = self.request
         return context
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+
+        if instance.updated_at and now() - instance.updated_at < timedelta(hours=4):
+            return Response({"detail": "Курс недавно обновлялся"}, status=400)
+
+        instance.updated_at = now()
+        instance.save()
+
+        subscribers = instance.subscribers.all()
+        for subscriber in subscribers:
+            send_course_update_email.delay(instance.id, subscriber.email)
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
 
 class LessonListCreateAPIView(generics.ListCreateAPIView):
     queryset = Lesson.objects.all()

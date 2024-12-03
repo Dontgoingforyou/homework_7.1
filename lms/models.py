@@ -13,6 +13,7 @@ class Course(models.Model):
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='lessons', verbose_name='Владелец', **NULLABLE
     )
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = 'Курс'
