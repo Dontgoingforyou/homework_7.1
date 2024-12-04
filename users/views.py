@@ -6,9 +6,11 @@ from rest_framework import viewsets, generics, filters
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 from users.models import User, Payment
 from users.permissions import IsOwner
-from users.serializers import UserSerializer, PaymentSerializer, UserProfileSerializer
+from users.serializers import UserSerializer, PaymentSerializer, UserProfileSerializer, CustomTokenObtainPairSerializer
 from users.services import create_stripe_price, create_stripe_sessions
 
 
@@ -78,3 +80,7 @@ class PaymentStatusAPIView(APIView):
             'session_id': session.id,
             'payment_status': payment_status
         })
+
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
