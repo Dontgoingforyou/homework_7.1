@@ -124,6 +124,13 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
+CELERY_BEAT_SCHEDULE = {
+  'example_task': {
+    'task': 'users.tasks.deactivate_inactive_users',
+    'schedule': timedelta(days=30),
+  }
+}
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
